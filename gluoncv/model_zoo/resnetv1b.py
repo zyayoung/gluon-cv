@@ -825,7 +825,6 @@ def resnet50_v1s(pretrained=False, root='~/.mxnet/models', ctx=cpu(0), **kwargs)
         model.classes_long = attrib.classes_long
     return model
 
-
 def resnet101_v1s(pretrained=False, root='~/.mxnet/models', ctx=cpu(0), **kwargs):
     """Constructs a ResNetV1s-101 model.
 

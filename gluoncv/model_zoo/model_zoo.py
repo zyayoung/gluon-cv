@@ -7,7 +7,6 @@ from .cifarresnet import *
 from .cifarresnext import *
 from .cifarwideresnet import *
 from .deeplabv3 import *
-from .deeplabv3b_plus import *
 from .densenet import *
 from .faster_rcnn import *
 from .fcn import *
@@ -107,6 +106,8 @@ _models = {
     'mask_rcnn_resnet18_v1b_coco': mask_rcnn_resnet18_v1b_coco,
     'faster_rcnn_resnet50_v1b_coco': faster_rcnn_resnet50_v1b_coco,
     'faster_rcnn_fpn_resnet50_v1b_coco': faster_rcnn_fpn_resnet50_v1b_coco,
+    'faster_rcnn_fpn_resnet18_v1b_voc': faster_rcnn_fpn_resnet18_v1b_voc,
+    'faster_rcnn_fpn_resnet50_v1b_voc': faster_rcnn_fpn_resnet50_v1b_voc,
     'faster_rcnn_fpn_bn_resnet50_v1b_coco': faster_rcnn_fpn_bn_resnet50_v1b_coco,
     'faster_rcnn_resnet50_v1b_custom': faster_rcnn_resnet50_v1b_custom,
     'faster_rcnn_resnet101_v1d_voc': faster_rcnn_resnet101_v1d_voc,
@@ -147,7 +148,6 @@ _models = {
     'deeplab_resnet152_voc': get_deeplab_resnet152_voc,
     'deeplab_resnet50_ade': get_deeplab_resnet50_ade,
     'deeplab_resnet101_ade': get_deeplab_resnet101_ade,
-    'deeplab_v3b_plus_wideresnet_citys': get_deeplab_v3b_plus_wideresnet_citys,
     'resnet18_v1b': resnet18_v1b,
     'resnet34_v1b': resnet34_v1b,
     'resnet50_v1b': resnet50_v1b,

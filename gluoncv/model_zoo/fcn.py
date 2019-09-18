@@ -7,7 +7,7 @@ from .segbase import SegBaseModel
 # pylint: disable=unused-argument,abstract-method,missing-docstring
 
 __all__ = ['FCN', 'get_fcn', 'get_fcn_resnet50_voc', 'get_fcn_resnet101_voc',
-           'get_fcn_resnet101_coco', 'get_fcn_resnet50_ade', 'get_fcn_resnet101_ade']
+           'get_fcn_resnet101_coco', 'get_fcn_resnet50_ade', 'get_fcn_resnet18_ade', 'get_fcn_resnet101_ade']
 
 class FCN(SegBaseModel):
     r"""Fully Convolutional Networks for Semantic Segmentation
@@ -219,6 +219,28 @@ def get_fcn_resnet50_ade(**kwargs):
     >>> print(model)
     """
     return get_fcn('ade20k', 'resnet50', **kwargs)
+
+def get_fcn_resnet18_ade(**kwargs):
+    r"""FCN model with base network ResNet-18 pre-trained on ADE20K dataset
+    from the paper `"Fully Convolutional Network for semantic segmentation"
+    <https://people.eecs.berkeley.edu/~jonlong/long_shelhamer_fcn.pdf>`_
+
+    Parameters
+    ----------
+    pretrained : bool or str
+        Boolean value controls whether to load the default pretrained weights for model.
+        String value represents the hashtag for a certain version of pretrained weights.
+    ctx : Context, default CPU
+        The context in which to load the pretrained weights.
+    root : str, default '~/.mxnet/models'
+        Location for keeping the model parameters.
+
+    Examples
+    --------
+    >>> model = get_fcn_resnet18_ade(pretrained=True)
+    >>> print(model)
+    """
+    return get_fcn('ade20k', 'resnet18', **kwargs)
 
 def get_fcn_resnet101_ade(**kwargs):
     r"""FCN model with base network ResNet-50 pre-trained on ADE20K dataset

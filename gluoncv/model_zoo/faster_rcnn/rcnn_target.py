@@ -1,9 +1,8 @@
 """RCNN Target Generator."""
 from __future__ import absolute_import
 
-from mxnet import autograd
 from mxnet import gluon
-
+from mxnet import autograd
 from ...nn.coder import MultiClassEncoder, NormalizedPerClassBoxCenterEncoder
 
 
@@ -29,7 +28,6 @@ class RCNNTargetSampler(gluon.HybridBlock):
         necessarily very precise. However, using a very big number may impact the training speed.
 
     """
-
     def __init__(self, num_image, num_proposal, num_sample, pos_iou_thresh, pos_ratio, max_num_gt):
         super(RCNNTargetSampler, self).__init__()
         self._num_image = num_image
@@ -39,7 +37,7 @@ class RCNNTargetSampler(gluon.HybridBlock):
         self._pos_iou_thresh = pos_iou_thresh
         self._max_num_gt = max_num_gt
 
-    # pylint: disable=arguments-differ
+    #pylint: disable=arguments-differ
     def hybrid_forward(self, F, rois, scores, gt_boxes):
         """Handle B=self._num_image by a for loop.
 
@@ -62,12 +60,12 @@ class RCNNTargetSampler(gluon.HybridBlock):
             new_samples = []
             new_matches = []
             for i in range(self._num_image):
-                roi = F.squeeze(F.slice_axis(rois, axis=0, begin=i, end=i + 1), axis=0)
-                score = F.squeeze(F.slice_axis(scores, axis=0, begin=i, end=i + 1), axis=0)
-                gt_box = F.squeeze(F.slice_axis(gt_boxes, axis=0, begin=i, end=i + 1), axis=0)
+                roi = F.squeeze(F.slice_axis(rois, axis=0, begin=i, end=i+1), axis=0)
+                score = F.squeeze(F.slice_axis(scores, axis=0, begin=i, end=i+1), axis=0)
+                gt_box = F.squeeze(F.slice_axis(gt_boxes, axis=0, begin=i, end=i+1), axis=0)
                 gt_score = F.ones_like(F.sum(gt_box, axis=-1, keepdims=True))
 
-                # concat rpn roi with ground truth. mix gt with generated boxes.
+                # concat rpn roi with ground truth
                 all_roi = F.concat(roi, gt_box, dim=0)
                 all_score = F.concat(score, gt_score, dim=0).squeeze(axis=-1)
                 # calculate (N, M) ious between (N, 4) anchors and (M, 4) bbox ground-truths
@@ -136,7 +134,7 @@ class RCNNTargetSampler(gluon.HybridBlock):
         return new_rois, new_samples, new_matches
 
 
-class RCNNTargetGenerator(gluon.HybridBlock):
+class RCNNTargetGenerator(gluon.Block):
     """RCNN target encoder to generate matching target and regression target values.
 
     Parameters
@@ -149,15 +147,14 @@ class RCNNTargetGenerator(gluon.HybridBlock):
         Standard deviations to be divided from regression targets.
 
     """
-
     def __init__(self, num_class, means=(0., 0., 0., 0.), stds=(.1, .1, .2, .2)):
         super(RCNNTargetGenerator, self).__init__()
         self._cls_encoder = MultiClassEncoder()
         self._box_encoder = NormalizedPerClassBoxCenterEncoder(
             num_class=num_class, means=means, stds=stds)
 
-    # pylint: disable=arguments-differ, unused-argument
-    def hybrid_forward(self, F, roi, samples, matches, gt_label, gt_box):
+    #pylint: disable=arguments-differ
+    def forward(self, roi, samples, matches, gt_label, gt_box):
         """Components can handle batch images
 
         Parameters
@@ -181,4 +178,8 @@ class RCNNTargetGenerator(gluon.HybridBlock):
             # box_target, box_weight (C, B, N, 4)
             box_target, box_mask = self._box_encoder(
                 samples, matches, roi, gt_label, gt_box)
+            # modify shapes to match predictions
+            # box (C, B, N, 4) -> (B, N, C, 4)
+            box_target = box_target.transpose((1, 2, 0, 3))
+            box_mask = box_mask.transpose((1, 2, 0, 3))
         return cls_target, box_target, box_mask

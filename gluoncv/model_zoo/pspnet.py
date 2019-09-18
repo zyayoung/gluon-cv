@@ -62,7 +62,7 @@ class PSPNet(SegBaseModel):
         return tuple(outputs)
 
     def demo(self, x):
-        return self.predict(x)
+        self.predict(x)
 
     def predict(self, x):
         h, w = x.shape[2:]
